@@ -1,6 +1,6 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
-from db.database import Base
+from app.db.database import Base
 
 class WorkItem(Base):
     __tablename__ = 'work_items'
