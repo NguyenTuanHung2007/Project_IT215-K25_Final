@@ -1,3 +1,3 @@
-from .database import DATABASE_URL, Base, SessionLocal, engine
+from .database import DATABASE_URL, Base, SessionLocal, engine, ensure_schema
 
-__all__ = ["Base", "DATABASE_URL", "SessionLocal", "engine"]
+__all__ = ["Base", "DATABASE_URL", "SessionLocal", "engine", "ensure_schema"]

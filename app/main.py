@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from app.core.handlers import register_exception_handlers
-from app.db import Base, engine
+from app.db import Base, engine, ensure_schema
 from app.models import *
 from app.routers import app_router
 from app.routers.auth import limiter as auth_limiter
@@ -23,6 +23,7 @@ app.state.limiter = auth_limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 Base.metadata.create_all(bind=engine)
+ensure_schema()
 
 register_exception_handlers(app)
 app.include_router(app_router)

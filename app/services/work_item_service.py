@@ -17,6 +17,7 @@ def get_work_item_for_user(db: Session,work_item_id: int,current_user: User,) ->
 		.join(ConstructionSite, ConstructionSite.id == WorkItem.site_id)
 		.where(
 			WorkItem.id == work_item_id,
+			ConstructionSite.deleted_at.is_(None),
 			or_(ConstructionSite.owner_id == current_user.id, member_of_site),
 		)
 	)
@@ -36,6 +37,7 @@ def update_work_item_for_user(db: Session, work_item_id: int,current_user: User,
 			.outerjoin(SiteMember, SiteMember.site_id == ConstructionSite.id)
 			.where(
 				ConstructionSite.id == data["site_id"],
+				ConstructionSite.deleted_at.is_(None),
 				or_(
 					ConstructionSite.owner_id == current_user.id,
 					SiteMember.user_id == current_user.id,
@@ -51,12 +53,3 @@ def update_work_item_for_user(db: Session, work_item_id: int,current_user: User,
 	db.commit()
 	db.refresh(work_item)
 	return work_item
-
-
-def delete_work_item(db: Session, work_item_id: int) -> None:
-	work_item = db.get(WorkItem, work_item_id)
-	if work_item is None:
-		raise NotFoundException("Công việc không tồn tại")
-
-	db.delete(work_item)
-	db.commit()

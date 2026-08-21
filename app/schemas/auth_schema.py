@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class ORMBaseSchema(BaseModel):
@@ -57,21 +57,43 @@ class ConstructionSiteBase(ORMBaseSchema):
 	description: Optional[str] = None
 	owner_id: Optional[int] = None
 
+	@field_validator("name")
+	@classmethod
+	def validate_name(cls, value: str) -> str:
+		if not value.strip():
+			raise ValueError("Tên công trình không được để trống")
+		return value
 
-class ConstructionSiteCreate(ConstructionSiteBase):
+
+class ConstructionSiteCreate(ORMBaseSchema):
 	name: str = Field(min_length=1, max_length=50)
 	description: Optional[str] = None
 
+	@field_validator("name")
+	@classmethod
+	def validate_name(cls, value: str) -> str:
+		if not value.strip():
+			raise ValueError("Tên công trình không được để trống")
+		return value
+
 
 class ConstructionSiteUpdate(ORMBaseSchema):
-	name: Optional[str] = None
+	name: Optional[str] = Field(default=None, min_length=1, max_length=50)
 	description: Optional[str] = None
 	owner_id: Optional[int] = None
+
+	@field_validator("name")
+	@classmethod
+	def validate_name(cls, value: str | None) -> str | None:
+		if value is not None and not value.strip():
+			raise ValueError("Tên công trình không được để trống")
+		return value
 
 
 class ConstructionSiteResponse(ConstructionSiteBase):
 	id: int
 	created_at: datetime
+	deleted_at: Optional[datetime] = None
 
 
 class SiteMemberBase(ORMBaseSchema):

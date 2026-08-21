@@ -10,6 +10,7 @@ class ConstructionSite(Base):
     description = Column(Text, nullable=True)
     owner_id = Column(Integer, ForeignKey('users.id'))
     created_at = Column(DateTime, nullable=False)
+    deleted_at = Column(DateTime, nullable=True)
 
     owner = relationship("User", back_populates="construction_sites")
     site_memberships = relationship("SiteMember", back_populates="site")
