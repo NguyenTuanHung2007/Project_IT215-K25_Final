@@ -15,9 +15,6 @@ class Settings(BaseSettings):
 	jwt_algorithm: str = "HS256"
 	access_token_expire_minutes: int = 30
 	refresh_token_expire_minutes: int = 10080
-	login_max_attempts: int = 5
-	login_window_seconds: int = 300
-	login_lockout_seconds: int = 900
 
 	model_config = SettingsConfigDict(
 		env_file=BASE_DIR / ".env",

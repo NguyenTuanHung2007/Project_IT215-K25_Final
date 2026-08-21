@@ -53,13 +53,14 @@ class UserResponse(UserBase):
 
 
 class ConstructionSiteBase(ORMBaseSchema):
-	name: str
+	name: str = Field(min_length=1, max_length=50)
 	description: Optional[str] = None
 	owner_id: Optional[int] = None
 
 
 class ConstructionSiteCreate(ConstructionSiteBase):
-	pass
+	name: str = Field(min_length=1, max_length=50)
+	description: Optional[str] = None
 
 
 class ConstructionSiteUpdate(ORMBaseSchema):
@@ -106,11 +107,11 @@ class WorkItemCreate(WorkItemBase):
 
 class WorkItemUpdate(ORMBaseSchema):
 	site_id: Optional[int] = None
-	title: Optional[str] = None
+	title: Optional[str] = Field(default=None, min_length=1, max_length=255)
 	description: Optional[str] = None
 	assignee_id: Optional[int] = None
-	status: Optional[str] = None
-	priority: Optional[str] = None
+	status: Optional[str] = Field(default=None, min_length=1, max_length=50)
+	priority: Optional[str] = Field(default=None, min_length=1, max_length=50)
 	due_date: Optional[datetime] = None
 
 
