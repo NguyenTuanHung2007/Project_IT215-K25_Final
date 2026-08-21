@@ -56,6 +56,36 @@ def list_sites(db: Session,current_user: User,search: str | None = None,) -> lis
 	return list(db.scalars(query).all())
 
 
+def get_site_for_user(db: Session,site_id: int,current_user: User,) -> ConstructionSite:
+	site = db.scalar(
+		select(ConstructionSite).where(
+			ConstructionSite.id == site_id,
+			ConstructionSite.deleted_at.is_(None),
+		)
+	)
+	if site is None:
+		raise NotFoundException("Công trình không tồn tại")
+
+	if site.owner_id == current_user.id:
+		return site
+
+	if db.scalar(
+		select(SiteMember).where(
+			SiteMember.site_id == site_id,
+			SiteMember.user_id == current_user.id,
+		)
+	) is None:
+		raise ForbiddenException("Bạn không thuộc công trình này")
+
+	return site
+
+
+def list_site_members(db: Session,site_id: int,current_user: User,) -> list[SiteMember]:
+	get_site_for_user(db, site_id, current_user)
+	query = select(SiteMember).where(SiteMember.site_id == site_id).order_by(SiteMember.user_id)
+	return list(db.scalars(query).all())
+
+
 def update_site(db: Session,site_id: int,current_user: User,data: dict,) -> ConstructionSite:
 	site = db.scalar(
 		select(ConstructionSite).where(

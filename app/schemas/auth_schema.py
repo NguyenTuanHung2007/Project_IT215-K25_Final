@@ -106,6 +106,10 @@ class SiteMemberCreate(SiteMemberBase):
 	joined_at: datetime
 
 
+class SiteMemberAdd(ORMBaseSchema):
+	user_id: int = Field(gt=0)
+
+
 class SiteMemberUpdate(ORMBaseSchema):
 	role: Optional[str] = None
 
